@@ -1,3 +1,1 @@
-El archivo /web-app/web-app/src/db/inventario.db es un archivo de base de datos SQLite y no puede contener código fuente o texto legible. Este archivo se crea automáticamente cuando se ejecuta el código que inicializa la base de datos. Por lo tanto, no se puede proporcionar contenido específico para este archivo.
-
-Para crear la base de datos, asegúrate de que tu archivo app.py contenga la lógica para conectar e inicializar la base de datos. Al ejecutar la aplicación, se generará el archivo inventario.db en la ubicación especificada.
+Conectar a base.-
