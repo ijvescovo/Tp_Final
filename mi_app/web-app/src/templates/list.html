@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <title>Listado de Productos</title>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Listado de Productos</h1>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="register.html">Registrar Producto</a></li>
+                    <li><a href="search.html">Buscar Producto</a></li>
+                    <li><a href="update.html">Actualizar Producto</a></li>
+                    <li><a href="delete.html">Eliminar Producto</a></li>
+                </ul>
+            </nav>
+        </header>
+        <main>
+            <h2>Productos Registrados</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th>Cantidad</th>
+                        <th>Precio</th>
+                        <th>Categoría</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for producto in productos %}
+                    <tr>
+                        <td>{{ producto.Código }}</td>
+                        <td>{{ producto.Nombre }}</td>
+                        <td>{{ producto.Descripción }}</td>
+                        <td>{{ producto.Cantidad }}</td>
+                        <td>{{ producto.Precio }}</td>
+                        <td>{{ producto.Categoria }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </main>
+        <footer>
+            <p>&copy; 2024 Gestión de Productos</p>
+        </footer>
+    </div>
+</body>
+</html>

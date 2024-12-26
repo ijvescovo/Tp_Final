@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Búsqueda de Productos</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Búsqueda de Productos</h1>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="register.html">Registrar Producto</a></li>
+                    <li><a href="search.html">Buscar Producto</a></li>
+                    <li><a href="update.html">Actualizar Producto</a></li>
+                    <li><a href="delete.html">Eliminar Producto</a></li>
+                    <li><a href="list.html">Listado de Productos</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main>
+            <form action="{{ url_for('buscar_producto') }}" method="POST">
+                <label for="codigo">Código del Producto:</label>
+                <input type="text" id="codigo" name="codigo" required>
+                <button type="submit">Buscar</button>
+            </form>
+
+            {% if producto %}
+                <h2>Resultado de la Búsqueda</h2>
+                <p><strong>Código:</strong> {{ producto.Código }}</p>
+                <p><strong>Nombre:</strong> {{ producto.Nombre }}</p>
+                <p><strong>Descripción:</strong> {{ producto.Descripción }}</p>
+                <p><strong>Cantidad:</strong> {{ producto.Cantidad }}</p>
+                <p><strong>Precio:</strong> {{ producto.Precio }}</p>
+                <p><strong>Categoría:</strong> {{ producto.Categoria }}</p>
+            {% elif producto is not none %}
+                <p>No se encontró ningún producto con ese código.</p>
+            {% endif %}
+        </main>
+
+        <footer>
+            <p>&copy; 2024 Gestión de Productos</p>
+        </footer>
+    </div>
+</body>
+</html>
