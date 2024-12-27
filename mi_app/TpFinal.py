@@ -1,94 +1,54 @@
 import sqlite3
-import os
 
-def conectar_db():
-    """Conecta a la base de datos o la crea si no existe."""
-    directorio_actual = os.path.dirname(os.path.abspath(__file__))
-    nombre_bbdd = os.path.join(directorio_actual, "db", "inventario.db")
-    try:
-        conexion = sqlite3.connect(nombre_bbdd)
-        return conexion
-    except sqlite3.Error as e:
-        print(f"Error al conectar a la base de datos: {e}")
-        return None
+def mostrar_menu():
+    """Muestra el menú principal."""
+    print("\nMenú para la Gestión de Productos:")
+    print("1. Registro: Alta de productos nuevos.")
+    print("2. Búsqueda: Consulta de datos de un producto específico.")
+    print("3. Actualización: Modificar solo la cantidad de un producto.")
+    print("4. Eliminación: Dar de baja productos.")
+    print("5. Listado: Listado completo de los productos en la base de datos.")
+    print("6. Reporte de Bajo Stock: Lista de productos con cantidad bajo mínimo.")
+    print("7. Salir.")
 
-def inicializar_bbdd(conexion):
-    """Crea la tabla productos si no existe."""
-    try:
-        cursor = conexion.cursor()
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS productos (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                Codigo TEXT UNIQUE,
-                Nombre TEXT NOT NULL,
-                Descripcion TEXT,
-                Cantidad INTEGER NOT NULL CHECK(Cantidad >= 0),
-                Precio REAL NOT NULL CHECK(Precio > 0),
-                Categoria TEXT
-            )
-        ''')
-        conexion.commit()
-    except sqlite3.Error as e:
-        print(f"Error al inicializar la base de datos: {e}")
+def obtener_precio():
+    """Obtiene y valida el precio del producto."""
+    while True:
+        try:
+            precio = float(input("Precio del producto:"))
+            if precio > 0:
+                return precio
+            else:
+                print("Entrada inválida. Debe ingresar un número decimal mayor a 0.")
+        except ValueError:
+            print("Entrada inválida. Debe ingresar un valor numérico decimal mayor a 0.")
 
-def registrar_producto(conexion, nombre, descripcion, cantidad, precio, categoria):
+def obtener_cantidad(nombre):
+    """Obtiene y valida la cantidad en stock del producto."""
+    while True:
+        try:
+            cantidad = int(input(f"Cantidad en stock de {nombre}:"))
+            if cantidad >= 0:
+                return cantidad
+            else:
+                print("Entrada inválida. El stock no puede ser negativo.")
+        except ValueError:
+            print("Entrada inválida. Debe ingresar un valor numérico entero.")
+
+def registrar_producto(conexion):
     """Registra un nuevo producto."""
+    print("\n--- Registro de Producto Nuevo ---")
+    nombre = input("Nombre del producto:").strip()
+    descripcion = input("Descripción del producto:").strip()
+    precio = obtener_precio()
+    cantidad = obtener_cantidad(nombre)
+    categoria = input("Categoría del producto:").strip()
+
     try:
         cursor = conexion.cursor()
-        cursor.execute("INSERT INTO productos (Nombre, Descripcion, Cantidad, Precio, Categoria) VALUES (?, ?, ?, ?, ?)",
+        cursor.execute("INSERT INTO productos (Nombre, Descripción, Cantidad, Precio, Categoria) VALUES (?, ?, ?, ?, ?)",
                        (nombre, descripcion, cantidad, precio, categoria))
-        id_producto = cursor.lastrowid
-        codigo = f"PROD{id_producto}"
-        cursor.execute("UPDATE productos SET Codigo = ? WHERE id = ?", (codigo, id_producto))
         conexion.commit()
-        return codigo
-    except sqlite3.IntegrityError:
-        print("Error. No se pudo registrar el producto (probablemente código duplicado).")
-        return None
+        print("Producto registrado exitosamente.")
     except sqlite3.Error as e:
-        print(f"Error al registrar producto: {e}")
-        return None
-
-def buscar_producto(conexion, codigo):
-    """Busca un producto por código."""
-    try:
-        cursor = conexion.cursor()
-        cursor.execute("SELECT * FROM productos WHERE Codigo = ?", (codigo,))
-        producto = cursor.fetchone()
-        return producto
-    except sqlite3.Error as e:
-        print(f"Error al buscar producto: {e}")
-        return None
-
-def actualizar_producto(conexion, codigo, nueva_cantidad):
-    """Actualiza solo la cantidad de un producto."""
-    try:
-        cursor = conexion.cursor()
-        cursor.execute("UPDATE productos SET Cantidad = ? WHERE Codigo = ?", (nueva_cantidad, codigo))
-        conexion.commit()
-        return True
-    except sqlite3.Error as e:
-        print(f"Error al actualizar producto: {e}")
-        return False
-
-def eliminar_producto(conexion, codigo):
-    """Elimina un producto por código."""
-    try:
-        cursor = conexion.cursor()
-        cursor.execute("DELETE FROM productos WHERE Codigo = ?", (codigo,))
-        conexion.commit()
-        return True
-    except sqlite3.Error as e:
-        print(f"Error al eliminar producto: {e}")
-        return False
-
-def listar_productos(conexion):
-    """Lista todos los productos."""
-    try:
-        cursor = conexion.cursor()
-        cursor.execute("SELECT * FROM productos")
-        productos = cursor.fetchall()
-        return productos
-    except sqlite3.Error as e:
-        print(f"Error al listar productos: {e}")
-        return None
+        print(f"Error al registrar el producto: {e}");
